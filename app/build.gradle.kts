@@ -53,4 +53,7 @@ dependencies {
     implementation(libs.androidx.fragment)
     // Kotlin
     implementation(libs.androidx.fragment.ktx)
+    //usefull for preference and fix deprecation of
+    //PreferenceManager
+    implementation(libs.androidx.preference)
 }
