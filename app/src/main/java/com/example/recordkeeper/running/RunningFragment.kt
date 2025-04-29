@@ -1,4 +1,4 @@
-package com.example.recordkeeper
+package com.example.recordkeeper.running
 
 import android.content.Intent
 import android.os.Bundle
@@ -33,7 +33,7 @@ class RunningFragment: Fragment() {
 
         private fun launchRunningRecordActivity(distance: String) {
         //in fragments, we cant use this as context, so we use requireContext()
-        val intent = Intent(context,EditRunningRecordActivity::class.java)
+        val intent = Intent(context, EditRunningRecordActivity::class.java)
         intent.putExtra("distance", distance)
         startActivity(intent)
     }

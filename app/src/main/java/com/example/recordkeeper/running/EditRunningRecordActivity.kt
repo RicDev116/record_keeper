@@ -1,26 +1,31 @@
-package com.example.recordkeeper
+package com.example.recordkeeper.running
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.recordkeeper.databinding.ActivityEditCyclingRecordBinding
+import com.example.recordkeeper.R
+import com.example.recordkeeper.databinding.ActivityEditRunningRecordBinding
 
-class EditCyclingRecordActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityEditCyclingRecordBinding
+class EditRunningRecordActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityEditRunningRecordBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
-        binding = ActivityEditCyclingRecordBinding.inflate(layoutInflater)
+        binding = ActivityEditRunningRecordBinding.inflate(layoutInflater)
         enableEdgeToEdge()
-        setContentView(binding.root)
+        setContentView(R.layout.activity_edit_running_record)
         applyWindowInsets()
-        intent.getStringExtra("travelType")?.let {
+
+        intent.getStringExtra("distance")?.let {
             title = it
         }
-        println(intent.getStringExtra("travelType"))
-    }
 
+        println(intent.getStringExtra("distance"))
+    }
     private fun applyWindowInsets(){
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
