@@ -1,36 +1,40 @@
-package com.example.recordkeeper.running
+package com.example.recordkeeper.edit_record
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.preference.PreferenceManager
-import com.example.recordkeeper.R
-import com.example.recordkeeper.databinding.ActivityEditRunningRecordBinding
+import com.example.recordkeeper.databinding.ActivityEditRecordBinding
 
-class EditRunningRecordActivity : AppCompatActivity() {
+class EditRecordActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityEditRunningRecordBinding
-    private var distance: String? = null
-    private lateinit var runningRecordsPreferences: SharedPreferences
+    private lateinit var binding: ActivityEditRecordBinding
+    public val screenData: EditRecordScreenData by lazy{
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getSerializableExtra("edit_record_screen_Data",EditRecordScreenData::class.java) as EditRecordScreenData
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getSerializableExtra("edit_record_screen_Data") as EditRecordScreenData
+        }
+    }
+    private val recordPreferences: SharedPreferences by lazy {
+        getSharedPreferences(screenData.sharedPreferencesName, Context.MODE_PRIVATE)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
-        binding = ActivityEditRunningRecordBinding.inflate(layoutInflater)
+        binding = ActivityEditRecordBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
         applyWindowInsets()
-        initializeLateInits()
         displayRecord()
-        binding.buttonSave.setOnClickListener {
-            saveRecord()
-            finish()
-        }
+        setUpUi()
 
 
         //default shared preferences
@@ -52,33 +56,50 @@ class EditRunningRecordActivity : AppCompatActivity() {
 //        }
     }
 
-    private fun initializeLateInits() {
-        intent.getStringExtra("distance")?.let {
-            title = it
+    private fun setUpUi() {
+
+        title = screenData.record + " Record"
+
+        binding.textInputRecord.hint = screenData.recordFieldHint
+
+        binding.buttonSave.setOnClickListener {
+            saveRecord()
+            finish()
         }
-        distance = intent.getStringExtra("distance")
-        runningRecordsPreferences = getSharedPreferences("running_records", Context.MODE_PRIVATE)
+
+        binding.buttonDelete.setOnClickListener {
+            deleteRecord()
+            finish()
+        }
+    }
+
+    private fun deleteRecord() {
+        recordPreferences.edit {
+            remove("${screenData.record} record")
+            remove("${screenData.record} date")
+        }
+        binding.editTextRecord.text = null
+        binding.editTextDate.text = null
     }
 
     private fun displayRecord() {
         binding.editTextRecord.setText(
-            runningRecordsPreferences.getString("$distance record", null)
+            recordPreferences.getString("${screenData.record} record", null)
         )
         binding.editTextDate.setText(
-            runningRecordsPreferences.getString("$distance date", null)
+            recordPreferences.getString("${screenData.record} date", null)
         )
     }
 
     private fun saveRecord() {
-        val runningRecordsPreferences =   getSharedPreferences("running_records", Context.MODE_PRIVATE)
-        if (distance == null) {
+        if (screenData.record == null) {
             return
         }
         val record = binding.editTextRecord.text.toString()
         val date = binding.editTextDate.text.toString()
-        runningRecordsPreferences.edit {
-            putString("$distance record", record)
-            putString("$distance date", date)
+        recordPreferences.edit {
+            putString("${this@EditRecordActivity.screenData.record} record", record)
+            putString("${this@EditRecordActivity.screenData.record} date", date)
         }
     }
 
