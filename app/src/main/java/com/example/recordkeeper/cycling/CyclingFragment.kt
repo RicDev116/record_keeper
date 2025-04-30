@@ -19,7 +19,7 @@ class CyclingFragment: Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentCyclingBinding.inflate(inflater,container,false)
         return binding.root
     }

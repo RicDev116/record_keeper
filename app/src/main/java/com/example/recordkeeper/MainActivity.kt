@@ -6,8 +6,10 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.edit
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.commit
@@ -15,6 +17,7 @@ import com.example.recordkeeper.cycling.CyclingFragment
 import com.example.recordkeeper.databinding.ActivityMainBinding
 import com.example.recordkeeper.running.RunningFragment
 import com.google.android.material.navigation.NavigationBarView
+import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity(), View.OnClickListener,
     NavigationBarView.OnItemSelectedListener {
@@ -71,17 +74,66 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.reset_running) {
-            Toast.makeText(this, "reset_running clicked", Toast.LENGTH_SHORT).show()
-            return true
-        }else if(item.itemId == R.id.reset_cycling) {
-            Toast.makeText(this, "reset_cycling clicked", Toast.LENGTH_SHORT).show()
-            return true
-        }else if(item.itemId == R.id.reset_all){
-            Toast.makeText(this, "reset_all clicked", Toast.LENGTH_SHORT).show()
-            return true
-        }else{
-            return super.onOptionsItemSelected(item)
+        val menuClickHandled = when (item.itemId) {
+            R.id.reset_running -> {
+                showConfirmationDIalog("running_records")
+                true
+            }
+            R.id.reset_cycling -> {
+                showConfirmationDIalog("cycling_records")
+                true
+            }
+            R.id.reset_all -> {
+                showConfirmationDIalog("all")
+                true
+            }
+            else -> false
+        }
+        return menuClickHandled
+    }
+
+    private fun showConfirmationDIalog(selection: String) {
+        AlertDialog.Builder(this)
+            .setTitle("Reset $selection Records")
+            .setMessage(
+                "Are you sure you want to reset $selection records?"
+            )
+            .setPositiveButton("Yes") { _, _ ->
+                when (selection) {
+                    "all" -> {
+                        getSharedPreferences("running_records", MODE_PRIVATE).edit { clear() }
+                        getSharedPreferences("cycling_records", MODE_PRIVATE).edit { clear() }
+                    }
+                    else -> getSharedPreferences(selection, MODE_PRIVATE).edit { clear() }
+                }
+                refreshCurrentFragment()
+                showConfirmation()
+            }
+            .setNegativeButton("No") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun showConfirmation() {
+        val snackbar = Snackbar.make(
+            binding.root,
+            "Records reset successfully",
+            Snackbar.LENGTH_SHORT
+        )
+        snackbar.anchorView = binding.bottomNavigationView
+        snackbar.setAction("Undo") {
+            refreshCurrentFragment()
+        }
+        snackbar.show()
+    }
+
+    private fun refreshCurrentFragment() {
+        //refresh del fragment
+        when (binding.bottomNavigationView.selectedItemId) {
+            R.id.navigation_running -> onRunningClicked()
+            R.id.navigation_cycling -> onCyclingClicked()
+            else -> {}
         }
     }
 
