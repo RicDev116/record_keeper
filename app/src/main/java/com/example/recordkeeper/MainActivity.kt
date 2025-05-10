@@ -105,7 +105,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
                         getSharedPreferences(RUNNING_DISPLAY_VALUE, MODE_PRIVATE).edit { clear() }
                         getSharedPreferences(CYCLING_DISPLAY_VALUE, MODE_PRIVATE).edit { clear() }
                     }
-                    else -> getSharedPreferences(selection, MODE_PRIVATE).edit { clear() }
+                    RUNNING_DISPLAY_VALUE -> getSharedPreferences(RunningFragment.FILE_NAME, MODE_PRIVATE)
+                        .edit { clear() }
+                    CYCLING_DISPLAY_VALUE -> getSharedPreferences(CyclingFragment.FILE_NAME, MODE_PRIVATE)
+                        .edit { clear() }
                 }
                 refreshCurrentFragment()
                 showConfirmation()
