@@ -40,13 +40,13 @@ class RunningFragment: Fragment() {
     }
 
     private fun displayRecords() {
-        val runningPreferences = requireContext().getSharedPreferences("running_records", Context.MODE_PRIVATE)
-        binding.textView5kmValue.text = runningPreferences.getString("5km record", null)
-        binding.textView5kmDate.text = runningPreferences.getString("5km date", null)
-        binding.textView10kmValue.text = runningPreferences.getString("10km record", null)
-        binding.textView10kmDate.text = runningPreferences.getString("10km date", null)
-        binding.textView12kmValue.text = runningPreferences.getString("12km record", null)
-        binding.textView12kmDate.text = runningPreferences.getString("12km date", null)
+        val runningPreferences = requireContext().getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE)
+        binding.textView5kmValue.text = runningPreferences.getString("5km ${EditRecordActivity.SHARED_PREFERENCES_RECORD_KEY}", null)
+        binding.textView5kmDate.text = runningPreferences.getString("5km ${EditRecordActivity.SHARED_PREFERENCES_DATE_KEY}", null)
+        binding.textView10kmValue.text = runningPreferences.getString("10km ${EditRecordActivity.SHARED_PREFERENCES_RECORD_KEY}", null)
+        binding.textView10kmDate.text = runningPreferences.getString("10km ${EditRecordActivity.SHARED_PREFERENCES_DATE_KEY}", null)
+        binding.textView12kmValue.text = runningPreferences.getString("12km ${EditRecordActivity.SHARED_PREFERENCES_RECORD_KEY}", null)
+        binding.textView12kmDate.text = runningPreferences.getString("12km ${EditRecordActivity.SHARED_PREFERENCES_DATE_KEY}", null)
     }
 
     private fun launchRunningRecordActivity(distance: String) {
@@ -54,11 +54,15 @@ class RunningFragment: Fragment() {
         val intent = Intent(context, EditRecordActivity::class.java)
         intent.putExtra("edit_record_screen_Data", EditRecordScreenData(
             record = distance,
-            sharedPreferencesName = "running_records",
+            sharedPreferencesName = FILE_NAME,
             recordFieldHint = "Time"
         ))
         intent.putExtra("distance", distance)
         startActivity(intent)
+    }
+
+    companion object{
+        const val FILE_NAME = "running_records"
     }
 
 }

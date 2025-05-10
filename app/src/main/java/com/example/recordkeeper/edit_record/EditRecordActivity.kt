@@ -11,17 +11,20 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.recordkeeper.databinding.ActivityEditRecordBinding
 
+const val INTENT_EXTRA_RECORD_DATA = "edit_record_screen_Data"
+
 class EditRecordActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityEditRecordBinding
     public val screenData: EditRecordScreenData by lazy{
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getSerializableExtra("edit_record_screen_Data",EditRecordScreenData::class.java) as EditRecordScreenData
+            intent.getSerializableExtra(INTENT_EXTRA_RECORD_DATA,EditRecordScreenData::class.java) as EditRecordScreenData
         } else {
             @Suppress("DEPRECATION")
-            intent.getSerializableExtra("edit_record_screen_Data") as EditRecordScreenData
+            intent.getSerializableExtra(INTENT_EXTRA_RECORD_DATA) as EditRecordScreenData
         }
     }
+    // lazy means that the variable will be initialized when it is first accessed
     private val recordPreferences: SharedPreferences by lazy {
         getSharedPreferences(screenData.sharedPreferencesName, Context.MODE_PRIVATE)
     }
@@ -56,17 +59,22 @@ class EditRecordActivity : AppCompatActivity() {
 //        }
     }
 
+    private fun displayRecord() {
+        binding.editTextRecord.setText(
+            recordPreferences.getString("${screenData.record} $SHARED_PREFERENCES_RECORD_KEY", null)
+        )
+        binding.editTextDate.setText(
+            recordPreferences.getString("${screenData.record} $SHARED_PREFERENCES_DATE_KEY", null)
+        )
+    }
+
     private fun setUpUi() {
-
         title = screenData.record + " Record"
-
         binding.textInputRecord.hint = screenData.recordFieldHint
-
         binding.buttonSave.setOnClickListener {
             saveRecord()
             finish()
         }
-
         binding.buttonDelete.setOnClickListener {
             deleteRecord()
             finish()
@@ -75,20 +83,11 @@ class EditRecordActivity : AppCompatActivity() {
 
     private fun deleteRecord() {
         recordPreferences.edit {
-            remove("${screenData.record} record")
-            remove("${screenData.record} date")
+            remove("${screenData.record} $SHARED_PREFERENCES_RECORD_KEY")
+            remove("${screenData.record} $SHARED_PREFERENCES_DATE_KEY")
         }
         binding.editTextRecord.text = null
         binding.editTextDate.text = null
-    }
-
-    private fun displayRecord() {
-        binding.editTextRecord.setText(
-            recordPreferences.getString("${screenData.record} record", null)
-        )
-        binding.editTextDate.setText(
-            recordPreferences.getString("${screenData.record} date", null)
-        )
     }
 
     private fun saveRecord() {
@@ -98,8 +97,8 @@ class EditRecordActivity : AppCompatActivity() {
         val record = binding.editTextRecord.text.toString()
         val date = binding.editTextDate.text.toString()
         recordPreferences.edit {
-            putString("${this@EditRecordActivity.screenData.record} record", record)
-            putString("${this@EditRecordActivity.screenData.record} date", date)
+            putString("${this@EditRecordActivity.screenData.record} $SHARED_PREFERENCES_RECORD_KEY", record)
+            putString("${this@EditRecordActivity.screenData.record} $SHARED_PREFERENCES_DATE_KEY", date)
         }
     }
 
@@ -115,5 +114,10 @@ class EditRecordActivity : AppCompatActivity() {
             )
             insets
         }
+    }
+
+    companion object {
+        const val SHARED_PREFERENCES_RECORD_KEY = "record"
+        const val SHARED_PREFERENCES_DATE_KEY = "date"
     }
 }

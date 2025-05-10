@@ -19,6 +19,7 @@ import com.example.recordkeeper.running.RunningFragment
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.snackbar.Snackbar
 
+
 class MainActivity : AppCompatActivity(), View.OnClickListener,
     NavigationBarView.OnItemSelectedListener {
     private lateinit var binding: ActivityMainBinding
@@ -76,15 +77,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val menuClickHandled = when (item.itemId) {
             R.id.reset_running -> {
-                showConfirmationDIalog("running_records")
+                showConfirmationDIalog(RUNNING_DISPLAY_VALUE)
                 true
             }
             R.id.reset_cycling -> {
-                showConfirmationDIalog("cycling_records")
+                showConfirmationDIalog(CYCLING_DISPLAY_VALUE)
                 true
             }
             R.id.reset_all -> {
-                showConfirmationDIalog("all")
+                showConfirmationDIalog(ALL_DISPLAY_VALUE)
                 true
             }
             else -> false
@@ -100,9 +101,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
             )
             .setPositiveButton("Yes") { _, _ ->
                 when (selection) {
-                    "all" -> {
-                        getSharedPreferences("running_records", MODE_PRIVATE).edit { clear() }
-                        getSharedPreferences("cycling_records", MODE_PRIVATE).edit { clear() }
+                    ALL_DISPLAY_VALUE -> {
+                        getSharedPreferences(RUNNING_DISPLAY_VALUE, MODE_PRIVATE).edit { clear() }
+                        getSharedPreferences(CYCLING_DISPLAY_VALUE, MODE_PRIVATE).edit { clear() }
                     }
                     else -> getSharedPreferences(selection, MODE_PRIVATE).edit { clear() }
                 }
@@ -167,6 +168,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
         R.id.navigation_running -> onRunningClicked()
         R.id.navigation_cycling -> onCyclingClicked()
         else -> false
+    }
+
+    companion object{
+        const val RUNNING_DISPLAY_VALUE = "running_records"
+        const val CYCLING_DISPLAY_VALUE = "cycling_records"
+        const val ALL_DISPLAY_VALUE = "all"
     }
 
 }

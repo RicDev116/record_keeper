@@ -34,7 +34,7 @@ class CyclingFragment: Fragment() {
     }
 
     private fun displayRecords() {
-        val cyclingPreferences = requireContext().getSharedPreferences("cycling_records", Context.MODE_PRIVATE)
+        val cyclingPreferences = requireContext().getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE)
         binding.textViewLongestRideValue.text = cyclingPreferences.getString("Longest Ride record", null)
         binding.textViewLongestRideDate.text = cyclingPreferences.getString("Longest Ride date", null)
         binding.textViewBiggestClimbValue.text = cyclingPreferences.getString("Biggest Climb record", null)
@@ -53,9 +53,14 @@ class CyclingFragment: Fragment() {
         val intent = Intent(context, EditRecordActivity::class.java)
         intent.putExtra("edit_record_screen_Data", EditRecordScreenData(
             record = record,
-            sharedPreferencesName = "cycling_records",
+            sharedPreferencesName = FILE_NAME,
             recordFieldHint = recordFieldHint
         ))
         startActivity(intent)
+    }
+
+    companion object{
+        const val FILE_NAME = "cycling_records"
+        const val RECORD_LONGEST_RIDE = "Longest Ride"
     }
 }
