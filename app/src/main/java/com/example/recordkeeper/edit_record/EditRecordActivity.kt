@@ -16,7 +16,7 @@ const val INTENT_EXTRA_RECORD_DATA = "edit_record_screen_Data"
 class EditRecordActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityEditRecordBinding
-    public val screenData: EditRecordScreenData by lazy{
+    private val screenData: EditRecordScreenData by lazy{
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getSerializableExtra(INTENT_EXTRA_RECORD_DATA,EditRecordScreenData::class.java) as EditRecordScreenData
         } else {
