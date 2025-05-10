@@ -61,6 +61,5 @@ class CyclingFragment: Fragment() {
 
     companion object{
         const val FILE_NAME = "cycling_records"
-        const val RECORD_LONGEST_RIDE = "Longest Ride"
     }
 }

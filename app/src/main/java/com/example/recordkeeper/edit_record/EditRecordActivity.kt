@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
@@ -114,6 +115,17 @@ class EditRecordActivity : AppCompatActivity() {
             )
             insets
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            //this is the id of the back button in the toolbar
+            android.R.id.home -> {
+                onBackPressedDispatcher.onBackPressed()//simulate the back button of the phone
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     companion object {
